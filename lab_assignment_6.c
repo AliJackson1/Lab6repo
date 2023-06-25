@@ -1,33 +1,73 @@
 #include <stdio.h>
+#include <stdlib.h>
 
-int binarySearch(int numbers[], int low, int high, int value) {
-    if (low > high)
-        return -1;
+int search(int numbers[], int low, int high, int value)
+{
+	if (low > high)
+		return -1;
 
-    int mid = low + (high - low) / 2;
+	int mid = low + (high - low) / 2;
 
-    if (numbers[mid] == value)
-        return mid;
-    else if (numbers[mid] < value)
-        return binarySearch(numbers, mid + 1, high, value);
-    else
-        return binarySearch(numbers, low, mid - 1, value);
+	if (numbers[mid] == value)
+		return mid;
+	else if (numbers[mid] < value)
+		return search(numbers, mid + 1, high, value);
+	else
+		return search(numbers, low, mid - 1, value);
 }
 
-int search(int numbers[], int low, int high, int value) {
-    return binarySearch(numbers, low, high, value);
+void printArray(int numbers[], int sz)
+{
+	int i;
+	printf("Number array: ");
+	for (i = 0; i < sz; ++i)
+	{
+		printf("%d ", numbers[i]);
+	}
+	printf("\n");
 }
 
-int main() {
-    // Test case from the provided input
-    int numbers[] = {3, 6, 'a', 'b', 'c', 'd', 'e', 'f'};
-    int low = 4;
-    int high = 7;
-    int value = 'd';
+int main(void)
+{
+	int i, numInputs;
+	double average;
+	int value;
+	int index;
+	int* numArray = NULL;
+	int countOfNums;
+	FILE* inFile = fopen("input.txt", "r");
 
-    int index = search(numbers, low, high, value);
+	fscanf(inFile, "%d", &numInputs);
 
-    printf("Index: %d\n", index);
+	while (numInputs-- > 0)
+	{
+		fscanf(inFile, "%d", &countOfNums);
+		numArray = (int*)malloc(countOfNums * sizeof(int));
+		average = 0;
+		for (i = 0; i < countOfNums; i++)
+		{
+			fscanf(inFile, "%d", &value);
+			numArray[i] = value;
+			average += numArray[i];
+		}
 
-    return 0;
+		printArray(numArray, countOfNums);
+		value = average / countOfNums;
+		index = search(numArray, 0, countOfNums - 1, value);
+		if (index >= 0)
+		{
+			printf("Item %d exists in the number array at index %d!\n", value, index);
+		}
+		else
+		{
+			printf("Item %d does not exist in the number array!\n", value);
+		}
+
+		free(numArray);
+	}
+
+	fclose(inFile);
+
+	return 0;
 }
+
